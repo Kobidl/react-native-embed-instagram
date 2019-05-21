@@ -1,0 +1,20 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    // Columns at which to show vertical rulers
+    "editor.rulers": [
+        80,
+        120
+    ],
+    "editor.renderWhitespace": "all",
+    "javascript.validate.enable": false,
+    "javascript.format.enable": false,
+    "editor.formatOnSave": true,
+    "prettier.printWidth": 80,
+    "prettier.tabWidth": 2,
+    "prettier.parser": "flow",
+    "prettier.trailingComma": "all",
+    "prettier.singleQuote": true,
+    "flow.useNPMPackagedFlow": true,
+    "flow.enabled": true,
+    "flowide.useCodeSnippetsOnFunctionSuggest": true
+}
