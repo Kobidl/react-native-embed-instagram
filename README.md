@@ -1,5 +1,5 @@
 # react-native-embed-instagram
-[![Build Status](https://travis-ci.org/Kobidl/react-native-instagram-embed.svg?branch=master)](https://travis-ci.org/Kobidl/react-native-embed-instagram) [![View package on npm](https://img.shields.io/npm/v/react-native-instagram-embed.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/react-native-embed-instagram) [![npm](https://img.shields.io/npm/dm/react-native-instagram-embed.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/react-native-embed-instagram)
+[![Build Status](https://travis-ci.org/kobidl/react-native-instagram-embed.svg?branch=master)](https://travis-ci.org/kobidl/react-native-embed-instagram) [![View package on npm](https://img.shields.io/npm/v/react-native-instagram-embed.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/react-native-embed-instagram) [![npm](https://img.shields.io/npm/dm/react-native-instagram-embed.svg?maxAge=2592000&style=flat-square)](https://www.npmjs.com/package/react-native-embed-instagram)
 
 Instagram Embed for React Native  
 Thanks to GaborWnuk
@@ -19,8 +19,6 @@ Use it to display standard Instagram embed "natively" (without WebView).
 
 ### Installation
 
-Use your favourite packager:
-
 ```
 npm i --save react-native-embed-instagram
 ```
@@ -28,6 +26,9 @@ npm i --save react-native-embed-instagram
 Example:
 
 ```
+import InstagramEmbed from 'react-native-embed-instagram'  
+
+
 <InstagramEmbed id="Bbbm0WmgVLa" style={{ width: "100%" }} />
 ```
 
