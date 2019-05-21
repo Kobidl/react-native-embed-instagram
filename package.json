@@ -6,10 +6,10 @@
     "instagram",
     "embed"
   ],
-  "homepage": "https://github.com/GaborWnuk/react-native-instagram-embed",
+  "homepage": "https://github.com/Kobidl/react-native-embed-instagram",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GaborWnuk/react-native-instagram-embed.git"
+    "url": "https://github.com/Kobidl/react-native-embed-instagram.git"
   },
   "private": false,
   "scripts": {
