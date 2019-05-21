@@ -1,7 +1,5 @@
 /**
  * Instagram Embed component for React Native
- * https://github.com/GaborWnuk
- * @flow
  */
 
 import React, { PureComponent } from 'react';
