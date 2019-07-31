@@ -20,6 +20,7 @@ export default class InstagramEmbed extends PureComponent {
       // views: 0,
       comments: 0,
       thumbnail: null,
+      image: null,
     };
   }
 
@@ -35,7 +36,6 @@ export default class InstagramEmbed extends PureComponent {
    * existing API (official) data with missing properties we need.
    */
   _fetchComplementaryData = id => {
-
     if (!id) {
       return;
     }
@@ -43,8 +43,8 @@ export default class InstagramEmbed extends PureComponent {
     fetch(`https://www.instagram.com/p/${id}/embed/captioned/`)
       .then(response => response.text())
       .then(responseText => {
-        let avatarRegex = /class=\"Avatar\"[^>]*>.*<img.*src=\"([^"]+)\".*<\/a>/s;
-        let avatarMatch = avatarRegex.exec(responseText);
+        let avatarRegex = /class=\"Avatar\".*\n\s*<img\ssrc="(.*.com)"/;
+        let avatarMatch = responseText.match(avatarRegex);
 
         let likesRegex = /class=\"SocialProof\">[^>]*>([^l]*)/s;
         let likesMatch = likesRegex.exec(responseText);
@@ -63,14 +63,20 @@ export default class InstagramEmbed extends PureComponent {
           avatar: avatarMatch ? avatarMatch[1] : null,
           likes: likesMatch ? likesMatch[1].trim() : null,
           // views: viewsMatch ? viewsMatch[1] : null,
-          comments: commentsMatch ? commentsMatch[1].replace("view all", "").trim() : null,
+          comments: commentsMatch
+            ? commentsMatch[1].replace('view all', '').trim()
+            : null,
         });
       })
-      .catch(error => { });
+      .catch(error => {});
   };
 
   componentDidMount = () => {
     const { id } = this.props;
+    // for carousels the thumbnail returned from oembed is broken so fetch the image this way instead
+    fetch(`https://instagram.com/p/${id}/media`).then(response => {
+      this.setState({ image: response.url });
+    });
     fetch(`https://api.instagram.com/oembed/?url=http://instagr.am/p/${id}/`)
       .then(response => response.json())
       .then(responseJson => {
@@ -91,6 +97,7 @@ export default class InstagramEmbed extends PureComponent {
       avatar,
       likes,
       comments,
+      image,
       // views,
     } = this.state;
 
@@ -108,29 +115,33 @@ export default class InstagramEmbed extends PureComponent {
         ]}
       >
         <View onLayout={this._onLayout}>
-        {showAvatar &&<View style={styles.headerContainer}>
-             {avatar && (
-              <Image
-                source={{
-                  uri: avatar,
-                }}
-                style={styles.avatar}
-              />
-            )}
-            <Text style={styles.author}>{response.author_name}</Text>
-          </View>}
-          {!!response.thumbnail_url && (
+          {showAvatar && (
+            <View style={styles.headerContainer}>
+              {avatar && (
+                <Image
+                  source={{
+                    uri: avatar,
+                  }}
+                  style={styles.avatar}
+                />
+              )}
+              <Text style={styles.author}>{response.author_name}</Text>
+            </View>
+          )}
+          {!!image && (
             <Image
-              source={{ uri: response.thumbnail_url }}
+              source={{ uri: image }}
               style={{
                 height:
-                  response.thumbnail_height * width / response.thumbnail_width,
+                  (response.thumbnail_height * width) /
+                  response.thumbnail_width,
               }}
             />
           )}
           <View style={{ flexDirection: 'column', margin: 8 }}>
-            {showStats && <View style={styles.statsContainer}>
-              {/* {!!views && (
+            {showStats && (
+              <View style={styles.statsContainer}>
+                {/* {!!views && (
                 <View style={{ flexDirection: 'row' }}>
                   <Image
                     source={require('./assets/images/icon_views.png')}
@@ -139,25 +150,26 @@ export default class InstagramEmbed extends PureComponent {
                   <Text style={styles.statLabel}>{views} views</Text>
                 </View>
               )} */}
-              {!!likes && (
-                <View style={{ flexDirection: 'row' }}>
-                  <Image
-                    source={require('./assets/images/icon_likes.png')}
-                    style={styles.statIcon}
-                  />
-                  <Text style={styles.statLabel}>{likes} likes</Text>
-                </View>
-              )}
-              {!!comments && (
-                <View style={{ flexDirection: 'row' }}>
-                  <Image
-                    source={require('./assets/images/icon_comments.png')}
-                    style={styles.statIcon}
-                  />
-                  <Text style={styles.statLabel}>{comments} comments</Text>
-                </View>
-              )}
-            </View>}
+                {!!likes && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Image
+                      source={require('./assets/images/icon_likes.png')}
+                      style={styles.statIcon}
+                    />
+                    <Text style={styles.statLabel}>{likes} likes</Text>
+                  </View>
+                )}
+                {!!comments && (
+                  <View style={{ flexDirection: 'row' }}>
+                    <Image
+                      source={require('./assets/images/icon_comments.png')}
+                      style={styles.statIcon}
+                    />
+                    <Text style={styles.statLabel}>{comments} comments</Text>
+                  </View>
+                )}
+              </View>
+            )}
             {showCaption && <Text>{response.title}</Text>}
           </View>
         </View>
@@ -167,9 +179,9 @@ export default class InstagramEmbed extends PureComponent {
 }
 
 InstagramEmbed.defaultProps = {
-  id: "",
+  id: '',
   style: {},
   showAvatar: true,
   showCaption: true,
-  showStats: true
-}
+  showStats: true,
+};
