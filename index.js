@@ -3,7 +3,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { View, Image, Text } from 'react-native';
+import { View, Image, Text, Dimensions } from 'react-native';
 
 import styles from './index-styles';
 
@@ -45,6 +45,19 @@ export default class InstagramEmbed extends PureComponent {
       .then(responseText => {
         let avatarRegex = /class=\"Avatar\"[^>]*>.*<img.*src=\"([^"]+)\".*<\/a>/s;
         let avatarMatch = avatarRegex.exec(responseText);
+        if (avatarMatch && avatarMatch.length > 0) {
+          avatarMatch = avatarMatch[1];
+        } else {
+          try {
+            avatarRegex = /class=\"Avatar InsideRing\"[^>]*>.*<img.*src=\"([^"]+)\".*<\/a>/s;
+            avatarMatch = avatarRegex.exec(responseText);
+            if (avatarMatch) {
+              avatarMatch = avatarMatch[0];
+              avatarMatch = avatarMatch.substring(avatarMatch.indexOf("src=") + 5);
+              avatarMatch = avatarMatch.substring(0, avatarMatch.indexOf("\""));
+            }
+          } catch (e) { }
+        }
 
         let likesRegex = /class=\"SocialProof\">[^>]*>([^l]*)/s;
         let likesMatch = likesRegex.exec(responseText);
@@ -55,12 +68,21 @@ export default class InstagramEmbed extends PureComponent {
         let commentsRegex = /class=\"CaptionComments\">[^>]*>([^c]*)/s;
         let commentsMatch = commentsRegex.exec(responseText);
 
-        let thumbnailRegex = /class=\"EmbeddedMedia\"[^>]*>.*<img.*src=\"([^"]+)\".*<\/a>/s;
+        let thumbnailRegex = /class=\"EmbeddedMediaImage\"[^>]*>.*<img.*src=\"([^"]+)\".*<\/a>/s;
         let thumbnailMatch = thumbnailRegex.exec(responseText);
 
+        if (thumbnailMatch) {
+          try {
+            thumbnailMatch = thumbnailMatch[0];
+            thumbnailMatch = thumbnailMatch.substring(thumbnailMatch.indexOf("src") + 5, thumbnailMatch.indexOf(">"));
+            thumbnailMatch = thumbnailMatch.split(' ');
+            thumbnailMatch = thumbnailMatch[0].replace('"', '');
+          } catch (e) { }
+        }
+
         this.setState({
-          thumbnail: thumbnailMatch ? thumbnailMatch[1] : null,
-          avatar: avatarMatch ? avatarMatch[1] : null,
+          thumbnail: thumbnailMatch ? thumbnailMatch : null,
+          avatar: avatarMatch ? avatarMatch : null,
           likes: likesMatch ? likesMatch[1].trim() : null,
           // views: viewsMatch ? viewsMatch[1] : null,
           comments: commentsMatch ? commentsMatch[1].replace("view all", "").trim() : null,
@@ -91,12 +113,14 @@ export default class InstagramEmbed extends PureComponent {
       avatar,
       likes,
       comments,
+      thumbnail
       // views,
     } = this.state;
 
     if (!response) {
       return <View style={[{ width: 0, height: 0 }, style]} />;
     }
+
     return (
       <View
         style={[
@@ -108,8 +132,8 @@ export default class InstagramEmbed extends PureComponent {
         ]}
       >
         <View onLayout={this._onLayout}>
-        {showAvatar &&<View style={styles.headerContainer}>
-             {avatar && (
+          {showAvatar && <View style={styles.headerContainer}>
+            {avatar && (
               <Image
                 source={{
                   uri: avatar,
@@ -119,15 +143,15 @@ export default class InstagramEmbed extends PureComponent {
             )}
             <Text style={styles.author}>{response.author_name}</Text>
           </View>}
-          {!!response.thumbnail_url && (
+          {(response.thumbnail_url || thumbnail) ? (
             <Image
-              source={{ uri: response.thumbnail_url }}
+              source={{ uri: thumbnail ? thumbnail : response.thumbnail_url }}
               style={{
                 height:
                   response.thumbnail_height * width / response.thumbnail_width,
               }}
             />
-          )}
+          ) : <></>}
           <View style={{ flexDirection: 'column', margin: 8 }}>
             {showStats && <View style={styles.statsContainer}>
               {/* {!!views && (
