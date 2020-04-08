@@ -35,7 +35,7 @@ import InstagramEmbed from 'react-native-embed-instagram'
 #### config
 
 Property | Type | Default | Description
---- | --- | ---
+--- | --- | --- | ---
 id | string | "" |The ID of the post
 style | object | {} | The container Style
 showAvatar | boolean | true | Show the author details
