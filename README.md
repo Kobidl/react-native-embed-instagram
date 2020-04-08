@@ -31,5 +31,21 @@ import InstagramEmbed from 'react-native-embed-instagram'
 <InstagramEmbed id="Bbbm0WmgVLa" style={{ width: "100%" }} />
 ```
 
+
+#### config
+
+Property | Type | Default | Description
+--- | --- | ---
+id | string | "" |The ID of the post
+style | object | {} | The container Style
+showAvatar | boolean | true | Show the author details
+showCaption | boolean | true | Show the post caption
+showStats | boolean | true | Show the post stats
+avatarStyle | object | {} | Avatar style
+nameStyle | object | {} | Author username style
+thumbnailStyle | object | {} | Thumbnail style
+renderCaption | fun | null | Render caption function
+
+
 ## License
 MIT.
