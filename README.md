@@ -1,7 +1,6 @@
 # react-native-embed-instagram
 
 Instagram Embed for React Native  
-Thanks to GaborWnuk
 
 ## What is it for?
 Simple as that - we needed Instagram embeds in our application, and couldn't find anything decent on the internet.
@@ -32,7 +31,7 @@ import InstagramEmbed from 'react-native-embed-instagram'
 ```
 
 
-#### config
+#### Config
 
 Property | Type | Default | Description
 --- | --- | --- | ---
